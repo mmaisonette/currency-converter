@@ -1,44 +1,50 @@
-[
-changelog
-]
-# filter out commit types
+[changelog]
+# Filter out commit types
 filter = true
-# regex for parsing commits
-commit_parsers = [
-    { message = "^feat", group = "Features" },
-    { message = "^fix", group = "Bug Fixes" },
-    { message = "^docs", group = "Documentation" },
-    { message = "^perf", group = "Performance" },
-    { message = "^refactor", group = "Refactoring" },
-    { message = "^test", group = "Testing" },
-    { message = "^chore", group = "Other" },
-]
 
-# template for the changelog
-template = """
-# Changelog
+# Commit parsers for different types of commits
+[changelog.commit_parsers]
+[[changelog.commit_parsers.rule]]
+pattern = "^feat"
+group = "Features"
 
-All notable changes to this project will be documented in this file.
+[[changelog.commit_parsers.rule]]
+pattern = "^fix"
+group = "Bug Fixes"
 
-{% for group, commits in groups %}
-## {{ group | striptags | trim | upper_first }}
+[[changelog.commit_parsers.rule]]
+pattern = "^docs"
+group = "Documentation"
 
-{% for commit in commits %}
-- {{ commit.message | upper_first }}\
-{% endfor %}
-{% endfor %}
-"""
+[[changelog.commit_parsers.rule]]
+pattern = "^perf"
+group = "Performance"
 
-[
-git
-]
-# parse the commits based on conventional commit specification
+[[changelog.commit_parsers.rule]]
+pattern = "^refactor"
+group = "Refactoring"
+
+[[changelog.commit_parsers.rule]]
+pattern = "^test"
+group = "Testing"
+
+[[changelog.commit_parsers.rule]]
+pattern = "^chore"
+group = "Other"
+
+[git]
+# Parse commits based on conventional commit specification
 conventional_commits = true
 filter_unconventional = true
 split_commits = false
-commit_preprocessors = [
-    { pattern = "\\(\\w+\\)!", message = "" },
-]
-commit_extractors = [
-    { pattern = "\\(\\w+\\):", message = "" },
-]
+
+# Template for the changelog
+[changelog.template]
+body = """
+{% if version %}## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
+{% endif %}
+{% for group, commits in groups %}### {{ group | striptags | trim | upper_first }}
+{% for commit in commits %}
+- {{ commit.message | upper_first }}{% endfor %}
+{% endfor %}
+"""
