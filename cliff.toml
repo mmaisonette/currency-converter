@@ -1,0 +1,44 @@
+[
+changelog
+]
+# filter out commit types
+filter = true
+# regex for parsing commits
+commit_parsers = [
+    { message = "^feat", group = "Features" },
+    { message = "^fix", group = "Bug Fixes" },
+    { message = "^docs", group = "Documentation" },
+    { message = "^perf", group = "Performance" },
+    { message = "^refactor", group = "Refactoring" },
+    { message = "^test", group = "Testing" },
+    { message = "^chore", group = "Other" },
+]
+
+# template for the changelog
+template = """
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+{% for group, commits in groups %}
+## {{ group | striptags | trim | upper_first }}
+
+{% for commit in commits %}
+- {{ commit.message | upper_first }}\
+{% endfor %}
+{% endfor %}
+"""
+
+[
+git
+]
+# parse the commits based on conventional commit specification
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+commit_preprocessors = [
+    { pattern = "\\(\\w+\\)!", message = "" },
+]
+commit_extractors = [
+    { pattern = "\\(\\w+\\):", message = "" },
+]
