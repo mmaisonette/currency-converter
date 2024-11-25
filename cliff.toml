@@ -11,6 +11,7 @@ commit_parsers = [
     { message = "^perf", group = "Performance" },
     { message = "^refactor", group = "Refactoring" },
     { message = "^test", group = "Testing" },
+    { message = "^chore", group = "Other" },
 ]
 
 # template for the changelog
