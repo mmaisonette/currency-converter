@@ -26,13 +26,30 @@ jobs:
 
       - name: Install git-cliff
         run: |
-          wget https://github.com/orhun/git-cliff/releases/latest/download/git-cliff-installer.sh
-          chmod +x git-cliff-installer.sh
-          ./git-cliff-installer.sh
+          # Download the latest release
+          curl -LO https://github.com/orhun/git-cliff/releases/latest/download/git-cliff-linux-x86_64.tar.gz
+
+          # Extract the archive
+          tar -xzf git-cliff-linux-x86_64.tar.gz
+
+          # Make the binary executable
+          chmod +x git-cliff
+
+          # Move to a directory in PATH
+          sudo mv git-cliff /usr/local/bin/
+
+          # Verify installation
+          git-cliff --version
 
       - name: Generate Changelog
         run: |
-          git cliff -o CHANGELOG.md
+          # Generate changelog using default or custom configuration
+          git-cliff -o CHANGELOG.md
+
+      - name: Display Changelog
+        run: |
+          echo "Generated Changelog:"
+          cat CHANGELOG.md
 
       - name: Commit Changelog
         uses: EndBug/add-and-commit@v9
