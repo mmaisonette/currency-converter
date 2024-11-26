@@ -35,4 +35,4 @@ jobs:
           git config user.email "marciomaisonette@gmail.com"
           git add CHANGELOG.md
           git commit -m "chore: update changelog [skip ci]"
-          git push origin main
+          git push origin ${GITHUB_REF#refs/heads/}
