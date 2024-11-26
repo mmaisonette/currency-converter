@@ -1,0 +1,63 @@
+[changelog]
+# Filter out commit types
+filter = true
+
+# Commit parsers for different types of commits
+[changelog.commit_parsers]
+# Features
+[[changelog.commit_parsers.rule]]
+message = "^feat"
+group = "Features"
+
+# Fixes
+[[changelog.commit_parsers.rule]]
+message = "^fix"
+group = "Bug Fixes"
+
+# Documentation
+[[changelog.commit_parsers.rule]]
+message = "^docs"
+group = "Documentation"
+
+# Performance
+[[changelog.commit_parsers.rule]]
+message = "^perf"
+group = "Performance"
+
+# Refactoring
+[[changelog.commit_parsers.rule]]
+message = "^refactor"
+group = "Refactoring"
+
+# Testing
+[[changelog.commit_parsers.rule]]
+message = "^test"
+group = "Testing"
+
+# Catch-all for other changes
+[[changelog.commit_parsers.rule]]
+message = ".*"
+group = "Other Changes"
+
+[git]
+# Conventional commit parsing
+conventional_commits = true
+filter_unconventional = true
+protect_breaking_commits = true
+commit_preprocessors = [
+    { pattern = "\\(\\w+\\)!", message = "" }
+]
+
+[changelog.template]
+header = """
+# Changelog
+All notable changes to this project will be documented in this file.
+"""
+body = """
+{% if version %}## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}{% else %}## [Unreleased]{% endif %}
+{% for group, commits in groups %}
+### {{ group | striptags | trim | upper_first }}
+{% for commit in commits %}
+- {{ commit.message | upper_first }}{% endfor %}
+{% endfor %}
+"""
