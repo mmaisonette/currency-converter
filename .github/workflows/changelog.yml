@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - main
-  release:
-    types: [created]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -19,26 +18,28 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Debug Git Logs
+        run: |
+          echo "Total commits:"
+          git rev-list --count HEAD
+          echo "\nLast 10 commits:"
+          git log -n 10 --pretty=format:"%h - %s"
+
       - name: Generate Changelog
         uses: orhun/git-cliff-action@v2
-        id: git-cliff
         with:
           config: cliff.toml
-          args: -vv --latest --strip header
+          args: -vv
         env:
           OUTPUT: CHANGELOG.md
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          body_path: CHANGELOG.md
-          generate_release_notes: true
+      - name: Display Changelog
+        run: |
+          echo "Generated Changelog:"
+          cat CHANGELOG.md
 
-      - name: Commit Changelog
-        uses: EndBug/add-and-commit@v9
+      - name: Archive Changelog
+        uses: actions/upload-artifact@v4
         with:
-          add: "CHANGELOG.md"
-          author_name: GitHub Actions
-          author_email: actions@github.com
-          message: "Update CHANGELOG.md"
+          name: changelog
+          path: CHANGELOG.md
