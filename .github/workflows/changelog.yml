@@ -1,45 +1,36 @@
-name: Generate Changelog
+name: Changelog CI
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  pull_request:
+    types: [opened]
 
-permissions:
-  contents: write
+  # Optionally you can use `workflow_dispatch` to run Changelog CI Manually
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Set Release Version"
+        required: true
 
 jobs:
-  changelog:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      # Checks-out your repository
+      - uses: actions/checkout@v2
+
+      - name: Run Changelog CI
+        uses: saadmk11/changelog-ci@v1.1.2
         with:
-          fetch-depth: 0
-
-      - name: Debug Git Logs
-        run: |
-          echo "Total commits:"
-          git rev-list --count HEAD
-          echo "\nLast 10 commits:"
-          git log -n 10 --pretty=format:"%h - %s"
-
-      - name: Generate Changelog
-        uses: orhun/git-cliff-action@v2
-        with:
-          config: cliff.toml
-          args: -vv
-        env:
-          OUTPUT: CHANGELOG.md
-
-      - name: Display Changelog
-        run: |
-          echo "Generated Changelog:"
-          cat CHANGELOG.md
-
-      - name: Archive Changelog
-        uses: actions/upload-artifact@v4
-        with:
-          name: changelog
-          path: CHANGELOG.md
+          # Optional, you can provide any name for your changelog file,
+          # We currently support Markdown (.md) and reStructuredText (.rst) files
+          # defaults to `CHANGELOG.md` if not provided.
+          changelog_filename: CHANGELOG.md
+          # Optional, only required when you want to run Changelog CI
+          # on an event other than `pull_request` event.
+          # In this example `release_version` is fetched from `workflow_dispatch` events input.
+          # You can use any other method to fetch the release version
+          # such as environment variable or from output of another action
+          release_version: ${{ github.event.inputs.release_version }}
+          # Optional
+          github_token: ${{ secrets.GITHUB_TOKEN }}
