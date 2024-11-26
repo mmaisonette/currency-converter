@@ -23,8 +23,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Git Cliff
-        uses: keithweaver/setup-git-cliff@v1
+      - name: Install git-cliff
+        run: |
+          wget https://github.com/orhun/git-cliff/releases/latest/download/git-cliff-installer.sh
+          chmod +x git-cliff-installer.sh
+          ./git-cliff-installer.sh
 
       - name: Generate Changelog
         run: |
