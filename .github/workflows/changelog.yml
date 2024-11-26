@@ -24,6 +24,9 @@ jobs:
       - name: Generate Changelog
         run: conventional-changelog -p angular -i CHANGELOG.md -s
 
+      - name: Debugging
+        run: git rev-parse --abbrev-ref HEAD
+
       - name: Commit and Push Changelog
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -32,4 +35,5 @@ jobs:
           git config user.email "marciomaisonette@gmail.com"
           git add CHANGELOG.md
           git commit -m "chore: update changelog [skip ci]"
+
           git push origin $(git rev-parse --abbrev-ref HEAD)
