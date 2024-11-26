@@ -1,56 +1,25 @@
 [changelog]
-# Filter out commit types
-filter = true
-
-# Commit parsers for different types of commits
-[changelog.commit_parsers]
-[[changelog.commit_parsers.rule]]
-pattern = "^feat"
-group = "Features"
-
-[[changelog.commit_parsers.rule]]
-pattern = "^fix"
-group = "Bug Fixes"
-
-[[changelog.commit_parsers.rule]]
-pattern = "^docs"
-group = "Documentation"
-
-[[changelog.commit_parsers.rule]]
-pattern = "^perf"
-group = "Performance"
-
-[[changelog.commit_parsers.rule]]
-pattern = "^refactor"
-group = "Refactoring"
-
-[[changelog.commit_parsers.rule]]
-pattern = "^test"
-group = "Testing"
-
-[[changelog.commit_parsers.rule]]
-pattern = "^ci"
-group = "Continuous Integration"
-
-[[changelog.commit_parsers.rule]]
-pattern = "^revert"
-group = "Reverts"
-
-[[changelog.commit_parsers.rule]]
-pattern = "^style"
-group = "Layout Style"
-
-[[changelog.commit_parsers.rule]]
-pattern = "^chore"
-group = "Other Changes"
+# Disable strict filtering
+filter = false
 
 [git]
-# Parse commits based on conventional commit specification
-conventional_commits = true
-filter_unconventional = true
+# More flexible commit parsing
+conventional_commits = false
+filter_unconventional = false
 split_commits = false
+# Allow parsing of various commit message formats
+commit_parsers = [
+    { message = "^feat", group = "Features" },
+    { message = "^fix", group = "Bug Fixes" },
+    { message = "^docs", group = "Documentation" },
+    { message = "^perf", group = "Performance" },
+    { message = "^refactor", group = "Refactoring" },
+    { message = "^test", group = "Testing" },
+    { message = "^chore", group = "Maintenance Tasks" },
+    # Catch-all for commits that don't match typical patterns
+    { message = ".*", group = "Other Changes" }
+]
 
-# Template for the changelog with commit IDs
 [changelog.template]
 body = """
 {% if version %}## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
