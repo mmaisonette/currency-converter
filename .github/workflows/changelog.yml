@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - develop
   pull_request:
     branches:
       - main
@@ -21,11 +20,31 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Create Changelog
-        uses: ardalanamini/auto-changelog@v4
+      - name: Generate Changelog
+        uses: heinrichreimer/github-changelog-generator-action@v2.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          release-name: Latest
-          mentions: true
-          breaking-changes: true
+          output: CHANGELOG.md
+
+      - name: Commit Changelog
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "CHANGELOG.md"
+          author_name: GitHub Actions
+          author_email: actions@github.com
+          message: "Update CHANGELOG.md"
+
+      - name: Upload Changelog
+        uses: actions/upload-artifact@v4
+        with:
+          name: changelog
+          path: CHANGELOG.md
+
+      - name: Create Release with Changelog
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          body_file: CHANGELOG.md
