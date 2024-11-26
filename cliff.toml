@@ -1,29 +1,40 @@
 [changelog]
-# Disable strict filtering
+# Enable verbose logging and include all commits
 filter = false
+sort_commits = "oldest"
 
 [git]
-# More flexible commit parsing
+# Disable strict conventional commit parsing
 conventional_commits = false
 filter_unconventional = false
 split_commits = false
-# Allow parsing of various commit message formats
-commit_parsers = [
-    { message = "^feat", group = "Features" },
-    { message = "^fix", group = "Bug Fixes" },
-    { message = "^docs", group = "Documentation" },
-    { message = "^perf", group = "Performance" },
-    { message = "^refactor", group = "Refactoring" },
-    { message = "^test", group = "Testing" },
-    { message = "^chore", group = "Maintenance Tasks" },
-]
+
+# Explicit commit parsers
+[[changelog.commit_parsers]]
+pattern = "^feat"
+group = "Features"
+
+[[changelog.commit_parsers]]
+pattern = "^fix"
+group = "Bug Fixes"
+
+[[changelog.commit_parsers]]
+pattern = ".*"
+group = "Other Changes"
 
 [changelog.template]
 body = """
 {% if version %}## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
 {% endif %}
-{% for group, commits in groups %}### {{ group | striptags | trim | upper_first }}
+{% for group, commits in groups %}### {{ group | trim | upper_first }}
 {% for commit in commits %}
-- `{{ commit.id | truncate(length=7, end="") }}` {{ commit.message | upper_first }}{% endfor %}
+- Commit: `{{ commit.id }}` 
+  Message: {{ commit.message | trim | upper_first }}
+  Date: {{ commit.date }}
+{% endfor %}
 {% endfor %}
 """
+
+# Additional settings to ensure comprehensive parsing
+[changelog.sort]
+order = "reverse"
