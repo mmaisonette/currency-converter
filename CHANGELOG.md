@@ -6,6 +6,7 @@
 
 **Merged pull requests:**
 
+- Develop [\#15](https://github.com/mmaisonette/currency-converter/pull/15) ([mmaisonette](https://github.com/mmaisonette))
 - Develop [\#14](https://github.com/mmaisonette/currency-converter/pull/14) ([mmaisonette](https://github.com/mmaisonette))
 - feat\(auto changelog\): rolling back to the previous action [\#13](https://github.com/mmaisonette/currency-converter/pull/13) ([mmaisonette](https://github.com/mmaisonette))
 - feat\(auto changelog\): adding the changelog and release steps in the w… [\#12](https://github.com/mmaisonette/currency-converter/pull/12) ([mmaisonette](https://github.com/mmaisonette))
