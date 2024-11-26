@@ -9,6 +9,7 @@
 ### Feat
 
 - Adding the changelog automation workflow
+- Adding more info in the changelog automation
 
 ### Fix
 
