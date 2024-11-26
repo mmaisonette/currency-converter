@@ -1,36 +1,22 @@
-name: Changelog CI
+name: Release using conventional commits (master branch)
 
 on:
-  pull_request:
-    types: [opened]
-
-  # Optionally you can use `workflow_dispatch` to run Changelog CI Manually
-  workflow_dispatch:
-    inputs:
-      release_version:
-        description: "Set Release Version"
-        required: true
+  push:
+    branches:
+      - master
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     steps:
-      # Checks-out your repository
-      - uses: actions/checkout@v2
+      - name: checkout
+        uses: actions/checkout@v2
 
-      - name: Run Changelog CI
-        uses: saadmk11/changelog-ci@v1.1.2
+      - name: conventional changelog action
+        id: changelog
+        # https://github.com/TriPSs/conventional-changelog-action
+        uses: TriPSs/conventional-changelog-action@latest
         with:
-          # Optional, you can provide any name for your changelog file,
-          # We currently support Markdown (.md) and reStructuredText (.rst) files
-          # defaults to `CHANGELOG.md` if not provided.
-          changelog_filename: CHANGELOG.md
-          # Optional, only required when you want to run Changelog CI
-          # on an event other than `pull_request` event.
-          # In this example `release_version` is fetched from `workflow_dispatch` events input.
-          # You can use any other method to fetch the release version
-          # such as environment variable or from output of another action
-          release_version: ${{ github.event.inputs.release_version }}
-          # Optional
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # you can also create separate token to trace action
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
