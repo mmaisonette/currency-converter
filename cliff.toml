@@ -16,8 +16,6 @@ commit_parsers = [
     { message = "^refactor", group = "Refactoring" },
     { message = "^test", group = "Testing" },
     { message = "^chore", group = "Maintenance Tasks" },
-    # Catch-all for commits that don't match typical patterns
-    { message = ".*", group = "Other Changes" }
 ]
 
 [changelog.template]
