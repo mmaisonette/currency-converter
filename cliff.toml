@@ -29,8 +29,20 @@ pattern = "^test"
 group = "Testing"
 
 [[changelog.commit_parsers.rule]]
+pattern = "^ci"
+group = "Continuous Integration"
+
+[[changelog.commit_parsers.rule]]
+pattern = "^revert"
+group = "Reverts"
+
+[[changelog.commit_parsers.rule]]
+pattern = "^style"
+group = "Layout Style"
+
+[[changelog.commit_parsers.rule]]
 pattern = "^chore"
-group = "Other"
+group = "Other Changes"
 
 [git]
 # Parse commits based on conventional commit specification
@@ -38,13 +50,13 @@ conventional_commits = true
 filter_unconventional = true
 split_commits = false
 
-# Template for the changelog
+# Template for the changelog with commit IDs
 [changelog.template]
 body = """
 {% if version %}## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
 {% endif %}
 {% for group, commits in groups %}### {{ group | striptags | trim | upper_first }}
 {% for commit in commits %}
-- {{ commit.message | upper_first }}{% endfor %}
+- `{{ commit.id | truncate(length=7, end="") }}` {{ commit.message | upper_first }}{% endfor %}
 {% endfor %}
 """
