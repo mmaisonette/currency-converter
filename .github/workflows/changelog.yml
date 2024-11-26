@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - develop
   pull_request:
     branches:
       - main
@@ -23,11 +24,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate Changelog
+      - name: Create Changelog
         uses: heinrichreimer/github-changelog-generator-action@v2.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           output: CHANGELOG.md
+          configurationsFile: .changelog.json
 
       - name: Commit Changelog
         uses: EndBug/add-and-commit@v9
@@ -42,9 +44,3 @@ jobs:
         with:
           name: changelog
           path: CHANGELOG.md
-
-      - name: Create Release with Changelog
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          body_file: CHANGELOG.md
